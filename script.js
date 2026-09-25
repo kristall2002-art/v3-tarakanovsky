@@ -91,6 +91,36 @@
     apply(true);
   }
 
+  /* ---------- мягкое появление блоков при прокрутке (IntersectionObserver) ----------
+     Работает одинаково при скролле мышью и при свайпе с телефона — эффект зависит
+     только от положения блока на экране, а не от наведения курсора. Срабатывает
+     один раз на блок (без повторных мельканий), полностью отключается в
+     prefers-reduced-motion (см. styles.css) и в режиме для слабовидящих. */
+  function initReveal() {
+    var sel = ['.sec-head', '.about-text', '.about-photo', '.step', '.svc-cat',
+      '.rsum', '.rev', '.fq', '.c-list', '.form-card', '.foot-top'];
+    var items = $$(sel.join(','));
+    if (!items.length) return;
+    items.forEach(function (el) { el.classList.add('reveal'); });
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      items.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    items.forEach(function (el) {
+      var within = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
+      el.style.transitionDelay = (Math.min(within, 5) * 70) + 'ms';
+      io.observe(el);
+    });
+  }
+
   /* ---------- сценический движок (параллакс, зависящий от прогресса скролла) ---------- */
   var stageEl, rafId = null, running = false;
   function setVars(map) { for (var k in map) root.style.setProperty(k, map[k]); }
@@ -285,7 +315,7 @@
   }
 
   function init() {
-    initA11y(); initHeader(); initForm(); initModals(); initMileSlider();
+    initA11y(); initHeader(); initForm(); initModals(); initMileSlider(); initReveal();
     initAccordion('.svc-grid', '.svc-cat', '.svc-cat > button');
     initAccordion('.faq', '.fq', '.fq > button');
     var y = $('#year'); if (y) y.textContent = new Date().getFullYear();

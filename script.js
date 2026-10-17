@@ -307,7 +307,7 @@
         'Удобное время: ' + ($('#fTime').value.trim() || '—'),
         'Комментарий: ' + ($('#fComment').value.trim() || '—'), '',
         'Сайт: ' + location.href];
-      window.location.href = 'mailto:site_vseti@mail.ru?subject=' + encodeURIComponent('Запись к нотариусу — Таракановский') +
+      window.location.href = 'mailto:03200229@npspb.ru?subject=' + encodeURIComponent('Запись к нотариусу — Таракановский') +
         '&body=' + encodeURIComponent(lines.join('\n'));
       var ok2 = $('#fOk'); ok2.textContent = 'Письмо сформировано и открыто в почтовом клиенте. Если не открылось — позвоните +7 (812) 315-25-23.'; ok2.classList.add('show');
     });
